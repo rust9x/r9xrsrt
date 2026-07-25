@@ -1,0 +1,29 @@
+cargo-features = ["panic-immediate-abort"]
+
+[package]
+name = "r9xrsrt"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["staticlib"]
+name = "libcmt"
+
+[features]
+windows_raw_dylib = []
+
+[dependencies]
+windows-sys = { version = "0.61.2", default-features = false }
+
+[build-dependencies]
+windows-bindgen = "0.66"
+
+[profile.dev]
+opt-level = 1
+panic = "immediate-abort"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "immediate-abort"

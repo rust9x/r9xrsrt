@@ -1,0 +1,6 @@
+[build]
+target = "i586-rust9x-windows-msvc"
+
+[target.'cfg(target_env = "msvc")']
+linker = "rust-lld"
+rustflags = ["-C", "link-args=/NODEFAULTLIB"]
