@@ -4,11 +4,11 @@
 #![no_builtins]
 #![allow(clippy::missing_safety_doc)]
 
-mod aull_x86;
 mod bindings;
 mod chkstk;
 mod entry;
 mod float;
+mod int64_x86;
 mod mem;
 mod static_init;
 mod tls;

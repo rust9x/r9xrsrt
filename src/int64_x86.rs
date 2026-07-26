@@ -59,6 +59,36 @@ extern "stdcall" fn aullrem_stdcall(a: u64, b: u64) -> u64 {
     unsafe { a - divmod_wide(a, b).1 }
 }
 
+/// `__int64 _alldiv(__int64 dividend, __int64 divisor)`
+#[unsafe(naked)]
+#[unsafe(no_mangle)]
+pub unsafe extern "custom" fn _alldiv() {
+    core::arch::naked_asm!("jmp {}", sym alldiv_stdcall);
+}
+
+/// 64-by-64-bit signed division, truncating towards zero.
+extern "stdcall" fn alldiv_stdcall(a: i64, b: i64) -> i64 {
+    // `wrapping_abs as u64` is the exact magnitude even for `i64::MIN`.
+    let q = aulldiv_stdcall(a.wrapping_abs() as u64, b.wrapping_abs() as u64) as i64;
+
+    // The quotient's sign is the XOR of the operands' signs.
+    if (a ^ b) < 0 { q.wrapping_neg() } else { q }
+}
+
+/// `__int64 _allrem(__int64 dividend, __int64 divisor)`
+#[unsafe(naked)]
+#[unsafe(no_mangle)]
+pub unsafe extern "custom" fn _allrem() {
+    core::arch::naked_asm!("jmp {}", sym allrem_stdcall);
+}
+
+/// 64-by-64-bit signed remainder, taking its sign from the dividend.
+extern "stdcall" fn allrem_stdcall(a: i64, b: i64) -> i64 {
+    let rem = aullrem_stdcall(a.wrapping_abs() as u64, b.wrapping_abs() as u64) as i64;
+
+    if a < 0 { rem.wrapping_neg() } else { rem }
+}
+
 /// 64-by-64-bit unsigned division for a divisor that needs both words, returning the quotient
 /// (which always fits in 32 bits here) and the exact product `quotient * divisor`.
 ///
