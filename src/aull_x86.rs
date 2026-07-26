@@ -9,6 +9,8 @@
 //! produce the symbol the linker looks for. The ABI it generates *is* correct, so a naked shim
 //! under the undecorated name only has to jump to it.
 
+use core::hint::unreachable_unchecked;
+
 /// `unsigned __int64 _aulldiv(unsigned __int64 dividend, unsigned __int64 divisor)`
 #[unsafe(naked)]
 #[unsafe(no_mangle)]
@@ -29,7 +31,8 @@ extern "stdcall" fn aulldiv_stdcall(a: u64, b: u64) -> u64 {
         return ((q_hi as u64) << 32) | q_lo as u64;
     }
 
-    divmod_wide(a, b).0 as u64
+    // SAFETY: high word == 0 is checked above.
+    unsafe { divmod_wide(a, b).0 as u64 }
 }
 
 /// `unsigned __int64 _aullrem(unsigned __int64 dividend, unsigned __int64 divisor)`
@@ -52,16 +55,24 @@ extern "stdcall" fn aullrem_stdcall(a: u64, b: u64) -> u64 {
     }
 
     // `a - q * b`, where the product is exact once the estimate has been corrected.
-    a - divmod_wide(a, b).1
+    // SAFETY: high word == 0 is checked above.
+    unsafe { a - divmod_wide(a, b).1 }
 }
 
 /// 64-by-64-bit unsigned division for a divisor that needs both words, returning the quotient
 /// (which always fits in 32 bits here) and the exact product `quotient * divisor`.
 ///
+/// # Safety
+///
 /// The high word of `b` must be non-zero.
-fn divmod_wide(a: u64, b: u64) -> (u32, u64) {
+unsafe fn divmod_wide(a: u64, b: u64) -> (u32, u64) {
     let (a_lo, a_hi) = (a as u32, (a >> 32) as u32);
     let (b_lo, b_hi) = (b as u32, (b >> 32) as u32);
+
+    if b_hi == 0 {
+        // SAFETY: guaranteed by the caller
+        unsafe { unreachable_unchecked() }
+    }
 
     // Normalize by shifting both operands right until the divisor is a single word, then divide;
     // that yields the quotient, possibly one too large because of the bits that were shifted out.
