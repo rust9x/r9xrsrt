@@ -1,5 +1,6 @@
 use crate::{
     bindings::{DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH, ExitProcess, HANDLE},
+    float::init_x87_cw,
     static_init::run_static_init,
 };
 use core::{
@@ -15,6 +16,7 @@ unsafe extern "C" {
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn mainCRTStartup() -> c_int {
     unsafe {
+        init_x87_cw();
         run_static_init();
         // rust's main doesn't use the arguments on windows
         let ret = main(0, ptr::null(), ptr::null());
