@@ -93,3 +93,28 @@ pub unsafe extern "C" fn memset(dest: *mut c_void, val: i32, len: usize) -> *mut
     }
     dest
 }
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn wcslen(p: *mut u16) -> usize {
+    let count: usize;
+    unsafe {
+        #[cfg(target_arch = "x86_64")]
+        core::arch::asm!(
+            "repne scasw",
+            inout("rdi") p => _,
+            inout("rcx") usize::MAX => count,
+            in("ax") 0u16,
+            options(nostack, readonly)
+        );
+        #[cfg(target_arch = "x86")]
+        core::arch::asm!(
+            "repne scasw",
+            inout("edi") p => _,
+            inout("ecx") usize::MAX => count,
+            in("ax") 0u16,
+            options(nostack, readonly)
+        );
+    }
+    // `ecx` was decremented once per element, including the terminating null.
+    !count - 1
+}
