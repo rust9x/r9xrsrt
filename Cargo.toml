@@ -10,6 +10,8 @@ crate-type = ["staticlib"]
 name = "libcmt"
 
 [features]
+default = ["windows_raw_dylib"]
+
 windows_raw_dylib = []
 
 [dependencies]
