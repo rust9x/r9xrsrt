@@ -27,7 +27,7 @@ pub unsafe extern "C" fn mainCRTStartup() -> c_int {
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn DllMainCRTStartup(
     _dll_handle: HANDLE,
-    reason: u32,
+    reason: i32,
     _reserved: *mut c_void,
 ) -> BOOL {
     unsafe {

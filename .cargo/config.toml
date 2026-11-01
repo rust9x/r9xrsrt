@@ -2,9 +2,15 @@
 build-std = ["core", "panic_abort"]
 build-std-features = ["compiler-builtins-mem"]
 
-[build]
-target = "i586-rust9x-windows-msvc"
+[alias]
+gen-bindings = [
+  "run",
+  "-Zbuild-std=",
+  "-Zbuild-std-features=",
+  "-p",
+  "gen-bindings",
+]
 
-[target.'cfg(target_env = "msvc")']
+[target.'cfg(target_family = "rust9x")']
 linker = "rust-lld"
 rustflags = ["-C", "link-args=/NODEFAULTLIB"]

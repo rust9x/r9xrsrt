@@ -9,7 +9,7 @@ the expected intrincics are available.
 ## Building
 
 ```sh
-cargo +rust9x build --release
+cargo +rust9x build --release --target i586-rust9x-windows-msvc
 ```
 
 ## Using
