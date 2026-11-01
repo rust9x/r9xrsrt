@@ -1,9 +1,8 @@
 //! Minimal implementations of mem functions.
 //!
-//! It's recommended to compile the stdlib with `-Zbuild-std-features=compiler-builtins-mem`, then
-//! the compiler will use its optimized builtins instead of these functions.
-//!
-//! These here only exist as fallback.
+//! It's recommended to compile the stdlib with `-Zbuild-std-features=compiler-builtins-mem` instead
+//! of enabling the `mem` feature. compiler-builtins defines these as weak symbols, so they lose
+//! against these strong definitions if both are present.
 
 use core::ffi::c_void;
 

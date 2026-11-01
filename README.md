@@ -30,8 +30,9 @@ rustflags = [
   - Even if unwinding is disabled, you also need to disable it for the standard library (otherwise
     it'll still ask for symbols like `__CxxFrameHandler3`) by using `-Zbuild-std=panic_abort` in the
     build command.
-- `memcpy`, `memmove`, `memset` are the simplest possible implementations. Use
-  `-Zbuild-std-features=compiler-builtins-mem` to use optimized compiler-builtins instead.
+- `memcpy`, `memmove`, `memset` and `wcslen` are expected to come from compiler-builtins via
+  `-Zbuild-std-features=compiler-builtins-mem`. Alternatively, enable the `mem` feature for the
+  simplest possible implementations. If you use both, the ones from this crate win.
 - If you don't need backtraces, don't specify the backtrace feature, saves 5-50KiB.
 - You'll need to always build at `opt-level = 1` or higher so that dead code elimination can remove
   unused/unimplemented functions. Otherwise you'll get link errors for missing symbols like `_fma`,

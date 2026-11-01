@@ -13,6 +13,9 @@ name = "libcmt"
 default = ["windows_raw_dylib"]
 
 windows_raw_dylib = []
+# fallback mem functions, only needed without `-Zbuild-std-features=compiler-builtins-mem`
+# these are minimal and slow, prefer using compiler-builtins-mem.
+mem = []
 
 [dependencies]
 windows-sys = { version = "0.61.2", default-features = false }

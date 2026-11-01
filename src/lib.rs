@@ -1,4 +1,3 @@
-#![feature(abi_custom)]
 #![no_std]
 #![no_main]
 #![no_builtins]
@@ -9,6 +8,7 @@ mod chkstk;
 mod entry;
 mod float;
 mod int64_x86;
+#[cfg(feature = "mem")]
 mod mem;
 mod static_init;
 mod tls;
